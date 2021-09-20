@@ -1,0 +1,24 @@
+{
+  "name": "blogapp",
+  "version": "1.0.0",
+  "description": "BlogApp",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TheoSmond/BlogApp.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/TheoSmond/BlogApp/issues"
+  },
+  "homepage": "https://github.com/TheoSmond/BlogApp#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "nodemon": "^2.0.12"
+  }
+}
