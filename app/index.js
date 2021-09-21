@@ -1,14 +1,24 @@
-const express = require('express')
+const express = require('express');
+const fetch = require('node-fetch');
+
+
+
 const app = express();
 
 app.get('/articles', (req, res) => {
     res.send("All articles")
 })
 
+app.get('/api/posts', (req, res) => {
+    fetch('https://jsonplaceholder.typicode.com/posts')
+        .then((response) => response.json())
+        .then((json) => res.json(json));
+});
+
 app.get('/article/1', (req, res) => {
     res.send({
-        name:"article 1",
-        desc:"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam condimentum augue in nulla volutpat, " +
+        name: "article 1",
+        desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam condimentum augue in nulla volutpat, " +
             "non mattis diam lacinia. Aliquam volutpat congue malesuada. Mauris ut lacinia tortor, nec porta libero. " +
             "Curabitur quis quam bibendum, blandit metus ac, malesuada magna. Duis nec fermentum urna. Suspendisse potenti. " +
             "Vestibulum feugiat interdum iaculis. Maecenas vel fringilla ipsum.\n" +
@@ -33,8 +43,8 @@ app.get('/article/1', (req, res) => {
             "\n" +
             "Morbi in iaculis metus. Vivamus diam orci, aliquam et justo et, hendrerit convallis tortor. Donec ultrices mollis odio. Nullam eu neque a mauris pulvinar imperdiet. Aliquam eu magna eget magna pretium hendrerit. Cras eget auctor diam. Nam pellentesque tempor nulla, id facilisis urna tristique in. Quisque suscipit turpis nec orci ornare, vitae dapibus dolor venenatis. Fusce at congue lectus, in rutrum est. Aenean quis sodales nunc, at malesuada tellus. Nam egestas dolor in pharetra sodales. Aenean tempus leo et tortor bibendum malesuada. Praesent ultrices a est eget gravida. Pellentesque eu metus id libero rhoncus maximus. Suspendisse id ligula vulputate, malesuada tellus eu, feugiat augue.\n" +
             "\n",
-        author:"Jack",
-        release:"12/09/2021"
+        author: "Jack",
+        release: "12/09/2021"
 
     })
 })
