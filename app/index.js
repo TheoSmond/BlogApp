@@ -1,11 +1,12 @@
 const express = require('express')
+const jwt = require('jsonwebtoken')
 const app = express();
 
 app.get('/articles', (req, res) => {
     res.send("All articles")
 })
 
-app.get('/article/1', (req, res) => {
+app.get('/articles/1', (req, res) => {
     res.send({
         name:"article 1",
         desc:"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam condimentum augue in nulla volutpat, " +
@@ -43,6 +44,48 @@ app.get('/', (req, res) => {
     res.send("Hello from NodeJs")
 })
 
+app.post('/articles/posts', verifyToken,(req, res) => {
+    //Vérifier de manière asynchrone le jeton donné à l'aide d'un secret ou d'une clé publique pour obtenir un jeton décodé
+    //mettre secretkey en varibale d'env
+    jwt.verify(req.token, 'secretkey', (err, authData) => {
+        if (err){
+            res.sendStatus(403); //renvoi forbidden si erreur
+        }else {
+            res.json({
+                message:'post created...',
+                authData
+            });
+        }
+    });
+});
+
 app.listen(5000, () => {
     console.log(`Server listen on 5000`)
 })
+
+app.post('/users/login', (req, res) => {
+    const user = {
+        //enlever l'id si possible pour sécurité
+        //id :1,
+        usernam:"QL",
+        email:"quentinloicp@gmail.com"
+    }
+    //Sign the given payload into a JSON Web Token string payload
+    jwt.sign({user: user}, 'secretkey', (err, token) => {
+        res.json({
+            token,
+        }); 
+    }); 
+}); 
+
+//FUNCTION QUI VERIFIE QUE LA REQUETE CONTIENT BIEN LE TOKEN JWT
+function verifyToken(req, res, next){
+   const bearerHeader = req.headers['authorization']
+   if(typeof bearerHeader !== 'undefined'){
+       const bearerToken = bearerHeader.split(" ")[1]
+       req.token=bearerToken
+       next();
+    }else{
+        res.sendStatus(403); //renvoi forbidden si erreur
+    }
+}
