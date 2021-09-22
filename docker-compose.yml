@@ -5,6 +5,11 @@ services:
       context: ./app
     ports:
       - "5000:5000"
+  reactserver:
+    build:
+      context: ./client
+    ports:
+      - "3000:3000"
   nginx:
     build:
       context: ./nginx
@@ -15,5 +20,6 @@ services:
       - ./certificates:/etc/nginx/certs
     depends_on:
       - nodeserver
+      - reactserver
 
 
