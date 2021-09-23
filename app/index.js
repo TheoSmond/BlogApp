@@ -1,8 +1,11 @@
 const express = require('express');
 const fetch = require('node-fetch');
-const express = require('express')
-const jwt = require('jsonwebtoken')
+const jwt = require('jsonwebtoken');
 const app = express();
+const dotenv = require('dotenv');
+
+dotenv.config();
+const secretkey = process.env.USER_KEY;
 
 app.get('/articles', (req, res) => {
     res.send("All articles")
@@ -54,8 +57,7 @@ app.get('/api', (req, res) => {
 
 app.post('/articles/posts', verifyToken,(req, res) => {
     //Vérifier de manière asynchrone le jeton donné à l'aide d'un secret ou d'une clé publique pour obtenir un jeton décodé
-    //mettre secretkey en varibale d'env
-    jwt.verify(req.token, 'secretkey', (err, authData) => {
+    jwt.verify(req.token, secretkey, (err, authData) => {
         if (err){
             res.sendStatus(403); //renvoi forbidden si erreur
         }else {
@@ -67,19 +69,15 @@ app.post('/articles/posts', verifyToken,(req, res) => {
     });
 });
 
-app.listen(5000, () => {
-    console.log(`Server listen on 5000`)
-})
+
 
 app.post('/users/login', (req, res) => {
     const user = {
-        //enlever l'id si possible pour sécurité
-        //id :1,
-        usernam:"QL",
+        username:"QL",
         email:"quentinloicp@gmail.com"
     }
     //Sign the given payload into a JSON Web Token string payload
-    jwt.sign({user: user}, 'secretkey', (err, token) => {
+    jwt.sign({user: user}, secretkey, (err, token) => {
         res.json({
             token,
         }); 
@@ -97,3 +95,6 @@ function verifyToken(req, res, next){
         res.sendStatus(403); //renvoi forbidden si erreur
     }
 }
+
+//export pour test jest
+module.exports = app
