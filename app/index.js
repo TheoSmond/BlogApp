@@ -61,14 +61,14 @@ app.get('/api', (req, res) => {
     res.send("Hello from NodeJs")
 })
 
-app.post('/articles/posts', verifyToken,(req, res) => {
+app.post('/api/articles/posts', verifyToken,(req, res) => {
     //Vérifier de manière asynchrone le jeton donné à l'aide d'un secret ou d'une clé publique pour obtenir un jeton décodé
     jwt.verify(req.token, secretkey, (err, authData) => {
         if (err) {
             res.sendStatus(403); //renvoi forbidden si erreur
         } else {
             res.json({
-                message: 'post created...',
+                message: 'article created...',
                 authData
             });
         }
@@ -78,14 +78,17 @@ app.post('/articles/posts', verifyToken,(req, res) => {
 app.post('/api/users/login', (req, res) => {
     const user = {
         username: "QL",
-        email: "quentinloicp@gmail.com"
+        password: "test"
     }
     //Sign the given payload into a JSON Web Token string payload
     jwt.sign({user: user}, secretkey, (err, token) => {
         res.json({
             token,
         });
+        console.log('JWT:'+token)
+    
     });
+    return token 
 });
 
 //FUNCTION QUI VERIFIE QUE LA REQUETE CONTIENT BIEN LE TOKEN JWT
@@ -100,5 +103,19 @@ function verifyToken(req, res, next) {
     }
 }
 
+function login(username,password){
+    app.post('/api/users/login', (req, res) => {
+            username,
+            password
+        //Sign the given payload into a JSON Web Token string payload
+        jwt.sign({user: user}, secretkey, (err, token) => {
+            res.json({
+                token,
+            });
+        });
+        return token 
+    });
+}
+
 //export pour test jest
-module.exports = app
+module.exports = app, login, verifyToken
