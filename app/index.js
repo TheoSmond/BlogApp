@@ -1,13 +1,19 @@
 const express = require('express');
 const fetch = require('node-fetch');
+const cors = require('cors');
 const jwt = require('jsonwebtoken');
 const app = express();
 const dotenv = require('dotenv');
 
+app.use(cors(
+    {
+        origin : 'http://reactserver:3000'
+    }))
+
 dotenv.config();
 const secretkey = process.env.USER_KEY;
 
-app.get('/articles', (req, res) => {
+app.get('/api/articles', (req, res) => {
     res.send("All articles")
 })
 
@@ -17,7 +23,7 @@ app.get('/api/posts', (req, res) => {
         .then((json) => res.json(json));
 });
 
-app.get('/articles/1', (req, res) => {
+app.get('/api/articles/1', (req, res) => {
     res.send({
         name: "article 1",
         desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam condimentum augue in nulla volutpat, " +
@@ -55,14 +61,14 @@ app.get('/api', (req, res) => {
     res.send("Hello from NodeJs")
 })
 
-app.post('/articles/posts', verifyToken,(req, res) => {
+app.post('/articles/posts', verifyToken, (req, res) => {
     //Vérifier de manière asynchrone le jeton donné à l'aide d'un secret ou d'une clé publique pour obtenir un jeton décodé
     jwt.verify(req.token, secretkey, (err, authData) => {
-        if (err){
+        if (err) {
             res.sendStatus(403); //renvoi forbidden si erreur
-        }else {
+        } else {
             res.json({
-                message:'post created...',
+                message: 'post created...',
                 authData
             });
         }
@@ -70,28 +76,27 @@ app.post('/articles/posts', verifyToken,(req, res) => {
 });
 
 
-
 app.post('/users/login', (req, res) => {
     const user = {
-        username:"QL",
-        email:"quentinloicp@gmail.com"
+        username: "QL",
+        email: "quentinloicp@gmail.com"
     }
     //Sign the given payload into a JSON Web Token string payload
     jwt.sign({user: user}, secretkey, (err, token) => {
         res.json({
             token,
-        }); 
-    }); 
-}); 
+        });
+    });
+});
 
 //FUNCTION QUI VERIFIE QUE LA REQUETE CONTIENT BIEN LE TOKEN JWT
-function verifyToken(req, res, next){
-   const bearerHeader = req.headers['authorization']
-   if(typeof bearerHeader !== 'undefined'){
-       const bearerToken = bearerHeader.split(" ")[1]
-       req.token=bearerToken
-       next();
-    }else{
+function verifyToken(req, res, next) {
+    const bearerHeader = req.headers['authorization']
+    if (typeof bearerHeader !== 'undefined') {
+        const bearerToken = bearerHeader.split(" ")[1]
+        req.token = bearerToken
+        next();
+    } else {
         res.sendStatus(403); //renvoi forbidden si erreur
     }
 }
