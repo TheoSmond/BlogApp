@@ -5,11 +5,20 @@ services:
       context: ./app
     ports:
       - "5000:5000"
+    links:
+      - dbserver
   reactserver:
     build:
       context: ./client
     ports:
       - "3000:3000"
+  dbserver:
+    image: mongo
+    container_name: mongodb
+    volumes:
+    - data:/data/db
+    ports:
+      - "27017:27017"
   nginx:
     build:
       context: ./nginx
@@ -21,5 +30,7 @@ services:
     depends_on:
       - nodeserver
       - reactserver
+volumes:
+  data:
 
 
