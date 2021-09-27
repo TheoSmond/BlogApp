@@ -61,7 +61,7 @@ app.get('/api', (req, res) => {
     res.send("Hello from NodeJs")
 })
 
-app.post('/articles/posts', verifyToken, (req, res) => {
+app.post('/articles/posts', verifyToken,(req, res) => {
     //Vérifier de manière asynchrone le jeton donné à l'aide d'un secret ou d'une clé publique pour obtenir un jeton décodé
     jwt.verify(req.token, secretkey, (err, authData) => {
         if (err) {
@@ -75,8 +75,7 @@ app.post('/articles/posts', verifyToken, (req, res) => {
     });
 });
 
-
-app.post('/users/login', (req, res) => {
+app.post('/api/users/login', (req, res) => {
     const user = {
         username: "QL",
         email: "quentinloicp@gmail.com"

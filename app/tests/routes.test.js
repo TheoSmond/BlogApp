@@ -7,7 +7,7 @@ const secretkey = process.env.USER_KEY;
 describe('Post Endpoints', () => {
   it('should create a new post', async () => {
     const res = await request(app)
-      .post('/users/login')
+      .post('/api/users/login')
       .send({
         const: user = {
           username:"QL",
