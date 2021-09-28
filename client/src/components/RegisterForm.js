@@ -46,7 +46,7 @@ class RegisterForm extends React.Component {
                     <form id="registerForm" className="row col-4">
                         <div className="col-12">
                             <label className="form-label">Username</label>
-                            <input type="text" className="form-control" value={this.state.login} onChange={this.handleLoginChange} id="loginInput"/>
+                            <input type="text" className="form-control" value={this.state.login} autoComplete="off" onChange={this.handleLoginChange} id="loginInput"/>
                         </div>
                         <div className="col-12">
                             <label className="form-label">Password</label>

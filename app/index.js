@@ -6,9 +6,12 @@ const jwt = require('jsonwebtoken');
 const app = express();
 const dotenv = require('dotenv');
 const passwordHash = require('password-hash');
-const secretkey = process.env.USER_KEY;
 const dbUrl = 'mongodb://dbserver:27017/blog-app-db';
 const Users = require('./models/dbUsers')
+
+dotenv.config();
+
+const secretkey = process.env.USER_KEY;
 
 //DB Config
 mongoose.connect(dbUrl, {
@@ -30,28 +33,47 @@ app.use(cors(
         origin: 'http://reactserver:3000'
     }))
 
-dotenv.config();
+
 
 //API EndPoints
 app.get('/api/articles', (req, res) => {
     res.send("All articles")
 })
 
-app.post('/api/users', (req, res) => {
-    const fetchData = req.body;
-    const hashedPassword = passwordHash.generate(fetchData.pwd);
-    const dbUser = {
-        login:fetchData.login,
-        pwd:hashedPassword,
-        role:fetchData.role
-    }
-    Users.create(dbUser, (err, data) => {
-        if (err){
-            res.status(500).send(err)
-        }else{
-            res.status(201).send(data)
+app.post('/api/users', async (req, res) => {
+    try{
+        const fetchData = req.body;
+
+        // check if user already exist
+        // Validate if user exist in our database
+        const login = fetchData.login;
+        const hashedPassword = passwordHash.generate(fetchData.pwd);
+        const dbUser = {
+            login:login,
+            pwd:hashedPassword,
+            role:fetchData.role
         }
-    })
+        const user = await Users.create(dbUser);
+
+        // Create token
+        const token = jwt.sign(
+            { user_id: user._id, login },
+            secretkey,
+            {
+                expiresIn: "2h",
+            }
+        );
+        console.log(token)
+        // save user token
+        user.token = token;
+        return user
+
+        res.status(201).json(user);
+
+    }catch (e){
+        console.log(e);
+    }
+
 });
 
 app.get('/api/users', (req, res) => {
