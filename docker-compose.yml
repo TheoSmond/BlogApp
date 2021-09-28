@@ -1,6 +1,8 @@
 version: "3.8"
 services:
   nodeserver:
+    volumes:
+      - ./app/:/usr/src/app
     build:
       context: ./app
     ports:
