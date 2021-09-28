@@ -138,19 +138,20 @@ function verifyToken(req, res, next) {
     }
 }
 
-function login(username,password){
-    app.post('/api/users/login', (req, res) => {
-            username,
-            password
-        //Sign the given payload into a JSON Web Token string payload
-        jwt.sign({user: user}, secretkey, (err, token) => {
-            res.json({
-                token,
-            });
-        });
-        return token 
-    });
-}
+// function login(username,password){
+//     app.post('/api/users/login', (req, res) => {
+//             username,
+//             password
+//         //Sign the given payload into a JSON Web Token string payload
+//         jwt.sign({user: user}, secretkey, (err, token) => {
+//             res.json({
+//                 token,
+//             });
+//         });
+        
+//     });
+//     return token 
+// }
 
 //export pour test jest
-module.exports = app, login, verifyToken
+module.exports = app
