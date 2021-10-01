@@ -42,18 +42,29 @@ app.get('/api/articles', (req, res) => {
 
 app.post('/api/users', async (req, res) => {
     try{
-        const fetchData = req.body;
 
-        // check if user already exist
-        // Validate if user exist in our database
-        const login = fetchData.login;
-        const hashedPassword = passwordHash.generate(fetchData.pwd);
-        const dbUser = {
-            login:login,
-            pwd:hashedPassword,
-            role:fetchData.role
+        const {login, pwd, role} = req.body;
+        // Validate user input
+        if (!(login && pwd )) {
+            return res.status(400).send("All input is required");
         }
-        const user = await Users.create(dbUser);
+        // check if user already
+        // Validate if user exist in our database
+        const oldUser = await Users.findOne({ login });
+
+        if (oldUser) {
+            console.log("user exist")
+            return res.status(409).send("User Already Exist. Please Login");
+        }
+        //Encrypt Password
+        const hashedPassword = passwordHash.generate(pwd);
+
+        // Create user in our database
+        const user = await Users.create({
+            login,
+            pwd: hashedPassword,
+            role
+        });
 
         // Create token
         const token = jwt.sign(
@@ -66,14 +77,13 @@ app.post('/api/users', async (req, res) => {
         console.log(token)
         // save user token
         user.token = token;
-        return user
 
+        // return new user
         res.status(201).json(user);
 
-    }catch (e){
-        console.log(e);
+    }catch (err){
+        console.log(err);
     }
-
 });
 
 app.get('/api/users', (req, res) => {
